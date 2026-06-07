@@ -13,6 +13,8 @@ RUN curl -fsSL -o /usr/local/bin/websocat \
 		"https://github.com/vi/websocat/releases/download/v${WEBSOCAT_VERSION}/websocat.x86_64-unknown-linux-musl" \
 	&& chmod +x /usr/local/bin/websocat
 
+COPY sshd-sandbox.conf /etc/ssh/sshd_config.d/sandbox.conf
+
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 

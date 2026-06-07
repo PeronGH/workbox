@@ -1,11 +1,22 @@
 #!/bin/bash
 set -euo pipefail
 
-mkdir -p /run/sshd
-ssh-keygen -A
+: "${AUTHORIZED_KEY:?AUTHORIZED_KEY must be set}"
 
-# TODO: provision authentication (authorized_keys, CA-signed certs, or a
-# password) before exposing this — the skeleton image ships none.
+install -d -m 700 /root/.ssh
+printf '%s\n' "$AUTHORIZED_KEY" > /root/.ssh/authorized_keys
+chmod 600 /root/.ssh/authorized_keys
+
+# Seed a deterministic ed25519 host key from the authorized key so it stays
+# stable across instance restarts. The printf bytes are the PKCS#8 prefix for
+# an ed25519 private key; the 32-byte seed follows.
+{ printf '\x30\x2e\x02\x01\x00\x30\x05\x06\x03\x2b\x65\x70\x04\x22\x04\x20'
+	printf '%s' "$AUTHORIZED_KEY" | openssl dgst -sha256 -binary
+} | openssl pkey -inform DER -out /etc/ssh/ssh_host_ed25519_key
+chmod 600 /etc/ssh/ssh_host_ed25519_key
+ssh-keygen -y -f /etc/ssh/ssh_host_ed25519_key > /etc/ssh/ssh_host_ed25519_key.pub
+
+mkdir -p /run/sshd
 
 /usr/sbin/sshd -D &
 websocat --binary ws-l:0.0.0.0:2222 tcp:127.0.0.1:22 &
