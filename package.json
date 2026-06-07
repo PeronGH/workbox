@@ -9,6 +9,7 @@
 		"check": "tsc --noEmit && biome check --write"
 	},
 	"dependencies": {
+		"@cloudflare/containers": "^0.3.7",
 		"hono": "^4.12.23"
 	},
 	"devDependencies": {
