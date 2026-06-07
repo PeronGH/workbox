@@ -16,7 +16,7 @@ import (
 // in the request path (e.g. /connect/22 -> 127.0.0.1:22).
 func main() {
 	http.HandleFunc("/", handle)
-	log.Fatal(http.ListenAndServe(":2052", nil))
+	log.Fatal(http.ListenAndServe("0.0.0.0:2052", nil))
 }
 
 func handle(w http.ResponseWriter, r *http.Request) {
