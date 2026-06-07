@@ -1,12 +1,10 @@
-FROM debian:bookworm-slim
+FROM buildpack-deps:trixie
 
 # websocat is not packaged for Debian; pin the static release binary.
 ARG WEBSOCAT_VERSION=1.14.1
 
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
-		ca-certificates \
-		curl \
 		openssh-server \
 		tini \
 	&& rm -rf /var/lib/apt/lists/*
