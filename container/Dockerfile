@@ -6,12 +6,41 @@ RUN go mod download
 COPY wsproxy/ ./
 RUN go build -o /usr/local/bin/wsproxy .
 
-FROM buildpack-deps:trixie
+FROM debian:trixie
 
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
+		bash-completion \
+		btop \
+		ca-certificates \
+		curl \
+		dnsutils \
+		fastfetch \
+		file \
+		git \
+		htop \
+		iproute2 \
+		iputils-ping \
+		jq \
+		less \
+		lsof \
+		man-db \
+		manpages \
+		micro \
+		nano \
+		netcat-openbsd \
 		openssh-server \
+		procps \
+		ripgrep \
+		rsync \
+		sudo \
 		tini \
+		tmux \
+		tree \
+		unzip \
+		vim \
+		wget \
+		zip \
 	&& rm -rf /var/lib/apt/lists/*
 
 RUN sed -i 's/^Components: main$/Components: main contrib non-free/' \
