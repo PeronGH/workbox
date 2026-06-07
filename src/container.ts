@@ -13,8 +13,7 @@ export class SshContainer extends Container {
 			return new Response("invalid port", { status: 400 });
 		}
 
-		this.envVars = { AUTHORIZED_KEY: authorizedKey };
-		await this.start();
+		await this.start({ envVars: { AUTHORIZED_KEY: authorizedKey } });
 
 		const socket = await this.dial(port);
 		if (!socket) {
