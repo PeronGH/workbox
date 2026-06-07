@@ -3,6 +3,7 @@ import { Hono } from "hono";
 
 export class SshContainer extends Container {
 	override defaultPort = 2222;
+	override requiredPorts = [22, 2222];
 }
 
 const app = new Hono<{ Bindings: CloudflareBindings }>();
