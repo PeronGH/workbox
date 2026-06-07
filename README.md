@@ -1,21 +1,23 @@
-```txt
-npm install
-npm run dev
+# workbox
+
+Ephemeral SSH sandboxes on Cloudflare Containers.
+
+## Deploy
+
+```sh
+bun run deploy
 ```
 
-```txt
-npm run deploy
+## Connect
+
+### websocat
+
+```sh
+ssh -o ProxyCommand="websocat -b -H='Cf-Access-Client-Id: $(cat ~/.ssh/id_ed25519.pub)' - wss://$HOST/connect/22" root@workbox
 ```
 
-[For generating/synchronizing types based on your Worker configuration run](https://developers.cloudflare.com/workers/wrangler/commands/#types):
+### cloudflared
 
-```txt
-npm run cf-typegen
-```
-
-Pass the `CloudflareBindings` as generics when instantiating `Hono`:
-
-```ts
-// src/index.ts
-const app = new Hono<{ Bindings: CloudflareBindings }>()
+```sh
+ssh -o ProxyCommand="cloudflared access tcp -T $HOST/connect/22 --id '$(cat ~/.ssh/id_ed25519.pub)'" root@workbox
 ```
