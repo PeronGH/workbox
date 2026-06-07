@@ -18,8 +18,4 @@ ssh-keygen -y -f /etc/ssh/ssh_host_ed25519_key > /etc/ssh/ssh_host_ed25519_key.p
 
 mkdir -p /run/sshd
 
-/usr/sbin/sshd -D &
-websocat --binary ws-l:0.0.0.0:2222 tcp:127.0.0.1:22 &
-
-# Exit if either daemon dies so Cloudflare restarts the instance.
-wait -n
+exec /usr/sbin/sshd -D
