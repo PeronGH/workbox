@@ -14,6 +14,9 @@ RUN apt-get update \
 		tini \
 	&& rm -rf /var/lib/apt/lists/*
 
+RUN sed -i 's/^Components: main$/Components: main contrib non-free/' \
+	/etc/apt/sources.list.d/debian.sources
+
 COPY --from=wsproxy /usr/local/bin/wsproxy /usr/local/bin/wsproxy
 
 COPY sshd-sandbox.conf /etc/ssh/sshd_config.d/sandbox.conf
