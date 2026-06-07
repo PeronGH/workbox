@@ -24,6 +24,7 @@ RUN apt-get update \
 		iputils-ping \
 		jq \
 		less \
+		locales \
 		lsof \
 		man-db \
 		manpages \
@@ -43,6 +44,11 @@ RUN apt-get update \
 		wget \
 		zip \
 	&& rm -rf /var/lib/apt/lists/*
+
+RUN sed -i '/^# *en_US\.UTF-8 UTF-8/s/^# *//' /etc/locale.gen \
+	&& locale-gen \
+	&& echo 'LANG=en_US.UTF-8' > /etc/environment
+ENV LANG=en_US.UTF-8
 
 RUN sed -i 's/^Components: main$/Components: main contrib non-free/' \
 	/etc/apt/sources.list.d/debian.sources
