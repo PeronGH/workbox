@@ -1,36 +1,42 @@
 import { getContainer } from "@cloudflare/containers";
 import { Hono } from "hono";
+import { createMiddleware } from "hono/factory";
 
 export { SshContainer } from "./container";
 
-const app = new Hono<{ Bindings: CloudflareBindings }>();
+type AppEnv = {
+	Bindings: CloudflareBindings;
+	Variables: { authorizedKey: string };
+};
 
-app.get("/workbox", async (c) => {
+const requireAuthKey = createMiddleware<AppEnv>(async (c, next) => {
 	const authorizedKey = c.req.header("Cf-Access-Client-Id");
 	if (!authorizedKey) {
 		return c.text("missing Cf-Access-Client-Id", 400);
 	}
+	c.set("authorizedKey", authorizedKey);
+	return next();
+});
+
+const app = new Hono<AppEnv>();
+
+app.use(requireAuthKey);
+
+app.get("/workbox", async (c) => {
 	const state = await getContainer(
 		c.env.SSH_CONTAINER,
-		authorizedKey,
+		c.get("authorizedKey"),
 	).getState();
 	return c.json(state);
 });
 
 app.delete("/workbox", async (c) => {
-	const authorizedKey = c.req.header("Cf-Access-Client-Id");
-	if (!authorizedKey) {
-		return c.text("missing Cf-Access-Client-Id", 400);
-	}
-	await getContainer(c.env.SSH_CONTAINER, authorizedKey).destroy();
+	await getContainer(c.env.SSH_CONTAINER, c.get("authorizedKey")).destroy();
 	return c.body(null, 204);
 });
 
 app.get("/connect/:port", (c) => {
-	const authorizedKey = c.req.header("Cf-Access-Client-Id");
-	if (!authorizedKey) {
-		return c.text("missing Cf-Access-Client-Id", 400);
-	}
+	const authorizedKey = c.get("authorizedKey");
 	const request = new Request(c.req.raw);
 	request.headers.set("X-Authorized-Key", authorizedKey);
 	return getContainer(c.env.SSH_CONTAINER, authorizedKey).fetch(request);
