@@ -1,6 +1,7 @@
 import { getContainer } from "@cloudflare/containers";
 import { Hono } from "hono";
 import { createMiddleware } from "hono/factory";
+import { parseAuthorizedKey } from "./authorized-key";
 
 export { SshContainer } from "./container";
 
@@ -10,9 +11,10 @@ type AppEnv = {
 };
 
 const requireAuthKey = createMiddleware<AppEnv>(async (c, next) => {
-	const authorizedKey = c.req.header("Cf-Access-Client-Id");
+	const header = c.req.header("Cf-Access-Client-Id");
+	const authorizedKey = header ? parseAuthorizedKey(header) : null;
 	if (!authorizedKey) {
-		return c.text("missing Cf-Access-Client-Id", 400);
+		return c.text("invalid Cf-Access-Client-Id", 400);
 	}
 	c.set("authorizedKey", authorizedKey);
 	return next();
