@@ -18,4 +18,6 @@ ssh-keygen -y -f /etc/ssh/ssh_host_ed25519_key > /etc/ssh/ssh_host_ed25519_key.p
 
 mkdir -p /run/sshd
 
-exec /usr/sbin/sshd -D
+/usr/sbin/sshd -D &
+wsproxy &
+wait -n
