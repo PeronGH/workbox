@@ -9,7 +9,7 @@ RUN go build -o /usr/local/bin/wsproxy .
 FROM debian:trixie
 
 RUN apt-get update \
-	&& apt-get install -y --no-install-recommends \
+	&& apt-get install -y \
 		aria2 \
 		bash-completion \
 		btop \
