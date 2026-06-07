@@ -16,6 +16,8 @@ RUN apt-get update \
 		ca-certificates \
 		curl \
 		dnsutils \
+		docker-compose \
+		docker.io \
 		fastfetch \
 		file \
 		git \
