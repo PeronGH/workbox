@@ -16,12 +16,12 @@ export class SshContainer extends Container {
 
 const app = new Hono<{ Bindings: CloudflareBindings }>();
 
-app.get("/connect/ed25519/:pubKey/ssh", (c) => {
-	const pubKey = c.req.param("pubKey");
-	const container = getContainer(c.env.SSH_CONTAINER, `ed25519-${pubKey}`);
-	const request = new Request(c.req.raw);
-	request.headers.set("X-Authorized-Key", `ssh-ed25519 ${pubKey}`);
-	return container.fetch(request);
+app.get("/connect/ssh", (c) => {
+	const authorizedKey = c.req.header("X-Authorized-Key");
+	if (!authorizedKey) {
+		return c.text("missing X-Authorized-Key", 400);
+	}
+	return getContainer(c.env.SSH_CONTAINER, authorizedKey).fetch(c.req.raw);
 });
 
 export default app;
