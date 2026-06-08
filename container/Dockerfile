@@ -21,6 +21,12 @@ RUN apt-get update \
 		tini \
 	&& rm -rf /var/lib/apt/lists/*
 
+RUN touch /.dockerenv \
+	&& NONINTERACTIVE=1 /bin/bash -c \
+		"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" \
+	&& echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' \
+		> /etc/profile.d/homebrew.sh
+
 COPY --from=wsproxy /usr/local/bin/wsproxy /usr/local/bin/wsproxy
 
 COPY bin/destroy /usr/local/bin/destroy
