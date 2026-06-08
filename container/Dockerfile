@@ -23,6 +23,8 @@ RUN touch /.dockerenv \
 	&& echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' \
 		> /etc/profile.d/homebrew.sh
 
+ENV PATH=/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:$PATH
+
 RUN apt-get update \
 	&& apt-get install -y \
 		docker-compose \
