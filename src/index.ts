@@ -32,11 +32,6 @@ app.get("/workbox", async (c) => {
 	return c.json(state);
 });
 
-app.delete("/workbox", async (c) => {
-	await getContainer(c.env.SSH_CONTAINER, c.get("authorizedKey")).destroy();
-	return c.body(null, 204);
-});
-
 app.get("/connect/:port", (c) => {
 	const authorizedKey = c.get("authorizedKey");
 	const request = new Request(c.req.raw);
