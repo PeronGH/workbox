@@ -38,6 +38,19 @@ RUN sed -i '/^# *en_US\.UTF-8 UTF-8/s/^# *//' /etc/locale.gen \
 	&& locale-gen \
 	&& echo 'LANG=en_US.UTF-8' > /etc/environment
 
+RUN brew install \
+	aria2 \
+	bind \
+	btop \
+	fastfetch \
+	htop \
+	jq \
+	micro \
+	ripgrep \
+	tree \
+	wget \
+	&& rm -rf "$(brew --cache)"
+
 COPY --from=wsproxy /usr/local/bin/wsproxy /usr/local/bin/wsproxy
 
 COPY bin/destroy /usr/local/bin/destroy
