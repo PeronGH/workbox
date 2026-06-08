@@ -12,25 +12,29 @@ RUN apt-get update \
 	&& apt-get install -y \
 		build-essential \
 		curl \
-		docker-compose \
-		docker.io \
 		file \
 		git \
-		locales \
-		openssh-server \
 		procps \
-		tini \
 	&& rm -rf /var/lib/apt/lists/*
-
-RUN sed -i '/^# *en_US\.UTF-8 UTF-8/s/^# *//' /etc/locale.gen \
-	&& locale-gen \
-	&& echo 'LANG=en_US.UTF-8' > /etc/environment
 
 RUN touch /.dockerenv \
 	&& NONINTERACTIVE=1 /bin/bash -c \
 		"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" \
 	&& echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' \
 		> /etc/profile.d/homebrew.sh
+
+RUN apt-get update \
+	&& apt-get install -y \
+		docker-compose \
+		docker.io \
+		locales \
+		openssh-server \
+		tini \
+	&& rm -rf /var/lib/apt/lists/*
+
+RUN sed -i '/^# *en_US\.UTF-8 UTF-8/s/^# *//' /etc/locale.gen \
+	&& locale-gen \
+	&& echo 'LANG=en_US.UTF-8' > /etc/environment
 
 COPY --from=wsproxy /usr/local/bin/wsproxy /usr/local/bin/wsproxy
 
