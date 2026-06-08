@@ -53,6 +53,9 @@ func handle(w http.ResponseWriter, r *http.Request) {
 	defer upstream.Close()
 
 	conn := websocket.NetConn(context.Background(), c, websocket.MessageBinary)
-	go func() { _, _ = io.Copy(upstream, conn) }()
+	go func() {
+		_, _ = io.Copy(upstream, conn)
+		upstream.Close()
+	}()
 	_, _ = io.Copy(conn, upstream)
 }

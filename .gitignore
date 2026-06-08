@@ -29,6 +29,9 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# go
+container/wsproxy/wsproxy
+
 # misc
 .DS_Store
 
