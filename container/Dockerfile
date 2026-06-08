@@ -57,10 +57,11 @@ RUN sed -i 's/^Components: main$/Components: main contrib non-free/' \
 
 COPY --from=wsproxy /usr/local/bin/wsproxy /usr/local/bin/wsproxy
 
+COPY bin/destroy /usr/local/bin/destroy
+
 COPY sshd-sandbox.conf /etc/ssh/sshd_config.d/sandbox.conf
 
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
+COPY bin/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 EXPOSE 2052
 
