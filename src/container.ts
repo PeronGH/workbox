@@ -5,10 +5,13 @@ export class SshContainer extends Container {
 
 	override async fetch(request: Request): Promise<Response> {
 		const authorizedKey = request.headers.get("X-Authorized-Key");
+		if (!authorizedKey) {
+			return new Response("missing X-Authorized-Key", { status: 400 });
+		}
 		await this.startAndWaitForPorts({
 			startOptions: {
 				envVars: {
-					AUTHORIZED_KEY: authorizedKey!,
+					AUTHORIZED_KEY: authorizedKey,
 				},
 			},
 		});
