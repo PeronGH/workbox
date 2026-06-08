@@ -20,7 +20,7 @@
 		{
 			"class_name": "SshContainer",
 			"image": "./container/Dockerfile",
-			"max_instances": 16,
+			"max_instances": 64,
 			"instance_type": "standard-4"
 		}
 	],
