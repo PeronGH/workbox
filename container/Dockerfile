@@ -60,8 +60,8 @@ COPY sshd-sandbox.conf /etc/ssh/sshd_config.d/sandbox.conf
 COPY motd /etc/motd
 COPY bin/motd-region /etc/update-motd.d/20-region
 
-COPY bin/entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY bin/entrypoint.sh /entrypoint.sh
 
 EXPOSE 2052
 
-ENTRYPOINT ["tini", "--", "/usr/local/bin/entrypoint.sh"]
+ENTRYPOINT ["tini", "--", "/entrypoint.sh"]
