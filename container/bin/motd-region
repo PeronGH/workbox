@@ -1,0 +1,2 @@
+#!/bin/sh
+curl -s https://www.cloudflare.com/cdn-cgi/trace | grep -E '^(colo|loc)='

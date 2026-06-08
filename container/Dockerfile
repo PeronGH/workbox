@@ -57,6 +57,9 @@ COPY bin/destroy /usr/local/bin/destroy
 
 COPY sshd-sandbox.conf /etc/ssh/sshd_config.d/sandbox.conf
 
+RUN rm -f /etc/motd
+COPY bin/motd-region /etc/update-motd.d/20-region
+
 COPY bin/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 EXPOSE 2052
