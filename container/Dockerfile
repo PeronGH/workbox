@@ -53,7 +53,7 @@ RUN brew install \
 
 COPY --from=wsproxy /usr/local/bin/wsproxy /usr/local/bin/wsproxy
 
-COPY bin/destroy /usr/local/bin/destroy
+COPY bin/poweroff /usr/local/sbin/poweroff
 
 COPY sshd-sandbox.conf /etc/ssh/sshd_config.d/sandbox.conf
 
