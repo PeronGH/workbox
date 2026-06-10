@@ -1,0 +1,10 @@
+[Unit]
+Description=WebSocket-to-TCP proxy
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/wsproxy
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

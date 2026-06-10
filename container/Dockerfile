@@ -21,7 +21,6 @@ RUN pacman -Syu --noconfirm \
 		micro \
 		openssh \
 		ripgrep \
-		tini \
 		tree \
 		wget \
 	&& rm -rf /var/cache/pacman/pkg/*
@@ -33,14 +32,15 @@ RUN echo 'en_US.UTF-8 UTF-8' > /etc/locale.gen \
 
 COPY --from=wsproxy /usr/local/bin/wsproxy /usr/local/bin/wsproxy
 
-COPY bin/poweroff /usr/local/sbin/poweroff
+COPY bin/motd-gen bin/workbox-setup /usr/local/bin/
 
 COPY sshd-sandbox.conf /etc/ssh/sshd_config.d/sandbox.conf
 
-COPY bin/motd-gen /usr/local/bin/motd-gen
+COPY units/ /etc/systemd/system/
 
-COPY bin/entrypoint.sh /entrypoint.sh
+RUN systemctl enable sshd docker wsproxy workbox-setup \
+	&& systemctl mask systemd-firstboot
 
 EXPOSE 2052
 
-ENTRYPOINT ["tini", "--", "/entrypoint.sh"]
+ENTRYPOINT ["/usr/lib/systemd/systemd"]

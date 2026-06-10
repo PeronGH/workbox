@@ -1,0 +1,12 @@
+[Unit]
+Description=Seed SSH credentials and motd
+Before=sshd.service wsproxy.service
+FailureAction=poweroff-force
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/workbox-setup
+
+[Install]
+WantedBy=multi-user.target
