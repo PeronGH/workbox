@@ -13,6 +13,7 @@ RUN pacman -Syu --noconfirm \
 		bind \
 		btop \
 		docker \
+		docker-buildx \
 		docker-compose \
 		fastfetch \
 		git \
