@@ -1,0 +1,6 @@
+#!/bin/sh
+cat <<'EOF'
+Run poweroff when you want a fresh machine.
+Inactive machines are recycled after 1 day.
+EOF
+curl -s https://www.cloudflare.com/cdn-cgi/trace | grep -E '^(colo|loc)='

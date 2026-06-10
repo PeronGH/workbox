@@ -6,50 +6,30 @@ RUN go mod download
 COPY wsproxy/ ./
 RUN go build -o /usr/local/bin/wsproxy .
 
-FROM debian:trixie-slim
+FROM archlinux:base-devel
 
-RUN apt-get update \
-	&& apt-get install -y \
-		build-essential \
-		curl \
-		file \
-		git \
-		procps \
-	&& rm -rf /var/lib/apt/lists/*
-
-RUN touch /.dockerenv \
-	&& NONINTERACTIVE=1 /bin/bash -c \
-		"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" \
-	&& echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' \
-		> /etc/profile.d/homebrew.sh
-
-ENV PATH=/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:$PATH
-
-RUN apt-get update \
-	&& apt-get install -y \
+RUN pacman -Syu --noconfirm \
+		aria2 \
+		bind \
+		btop \
+		docker \
 		docker-compose \
-		docker.io \
-		locales \
-		openssh-server \
+		fastfetch \
+		git \
+		htop \
+		jq \
+		micro \
+		openssh \
+		ripgrep \
 		tini \
-	&& rm -rf /var/lib/apt/lists/*
+		tree \
+		wget \
+	&& rm -rf /var/cache/pacman/pkg/*
 
-RUN sed -i '/^# *en_US\.UTF-8 UTF-8/s/^# *//' /etc/locale.gen \
+RUN echo 'en_US.UTF-8 UTF-8' > /etc/locale.gen \
 	&& locale-gen \
+	&& echo 'LANG=en_US.UTF-8' > /etc/locale.conf \
 	&& echo 'LANG=en_US.UTF-8' > /etc/environment
-
-RUN brew install \
-	aria2 \
-	bind \
-	btop \
-	fastfetch \
-	htop \
-	jq \
-	micro \
-	ripgrep \
-	tree \
-	wget \
-	&& rm -rf "$(brew --cache)"
 
 COPY --from=wsproxy /usr/local/bin/wsproxy /usr/local/bin/wsproxy
 
@@ -57,8 +37,7 @@ COPY bin/poweroff /usr/local/sbin/poweroff
 
 COPY sshd-sandbox.conf /etc/ssh/sshd_config.d/sandbox.conf
 
-COPY motd /etc/motd
-COPY bin/motd-region /etc/update-motd.d/20-region
+COPY bin/motd-gen /usr/local/bin/motd-gen
 
 COPY bin/entrypoint.sh /entrypoint.sh
 
