@@ -1,6 +1,6 @@
 [Unit]
 Description=WebSocket-to-TCP proxy
-After=network.target
+After=network.target sshd.service
 
 [Service]
 ExecStart=/usr/local/bin/wsproxy
