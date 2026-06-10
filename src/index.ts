@@ -1,5 +1,5 @@
 import { getContainer } from "@cloudflare/containers";
-import { Hono } from "hono";
+import { type Context, Hono } from "hono";
 import { createMiddleware } from "hono/factory";
 import { parseAuthorizedKey } from "./authorized-key";
 
@@ -32,11 +32,24 @@ app.get("/workbox", async (c) => {
 	return c.json(state);
 });
 
-app.get("/connect/:port", (c) => {
+const connect = (c: Context<AppEnv>, port: string) => {
 	const authorizedKey = c.get("authorizedKey");
-	const request = new Request(c.req.raw);
+	const url = new URL(c.req.url);
+	url.pathname = `/connect/${port}`;
+	const request = new Request(url, c.req.raw);
 	request.headers.set("X-Authorized-Key", authorizedKey);
 	return getContainer(c.env.SSH_CONTAINER, authorizedKey).fetch(request);
+};
+
+app.get("/connect/:port", (c) => connect(c, c.req.param("port")));
+
+app.get("/connect", (c) => {
+	const destination = c.req.header("Cf-Access-Jump-Destination") ?? "";
+	const port = destination.slice(destination.lastIndexOf(":") + 1);
+	if (!/^\d+$/.test(port)) {
+		return c.text("invalid Cf-Access-Jump-Destination", 400);
+	}
+	return connect(c, port);
 });
 
 export default app;
