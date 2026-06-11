@@ -6,7 +6,7 @@ RUN go mod download
 COPY wsproxy/ ./
 RUN go build -o /usr/local/bin/wsproxy .
 
-FROM debian:trixie-slim
+FROM debian:trixie
 
 RUN apt-get update \
 	&& apt-get install -y \
