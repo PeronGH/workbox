@@ -1,7 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-AUTHORIZED_KEY=$(tr '\0' '\n' </proc/1/environ | sed -n 's/^AUTHORIZED_KEY=//p')
 : "${AUTHORIZED_KEY:?AUTHORIZED_KEY must be set}"
 
 install -d -m 700 /root/.ssh
@@ -17,4 +16,11 @@ chmod 600 /root/.ssh/authorized_keys
 chmod 600 /etc/ssh/ssh_host_ed25519_key
 ssh-keygen -y -f /etc/ssh/ssh_host_ed25519_key > /etc/ssh/ssh_host_ed25519_key.pub
 
+mkdir -p /run/sshd
+
 motd-gen > /etc/motd || true
+
+dockerd >/var/log/dockerd.log 2>&1 &
+/usr/sbin/sshd -D &
+wsproxy &
+wait -n

@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"path"
 	"strconv"
+	"time"
 
 	"github.com/coder/websocket"
 )
@@ -15,8 +16,20 @@ import (
 // wsproxy accepts WebSocket connections and proxies each to the TCP port named
 // in the request path (e.g. /connect/22 -> 127.0.0.1:22).
 func main() {
+	waitForSSHD()
 	http.HandleFunc("/", handle)
 	log.Fatal(http.ListenAndServe("0.0.0.0:2052", nil))
+}
+
+func waitForSSHD() {
+	for {
+		c, err := net.DialTimeout("tcp", "127.0.0.1:22", time.Second)
+		if err == nil {
+			c.Close()
+			return
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
 }
 
 func handle(w http.ResponseWriter, r *http.Request) {
