@@ -4,6 +4,10 @@ export class SshContainer extends Container {
 	override defaultPort = 2052;
 	override sleepAfter = "24h";
 
+	override async onStop(): Promise<void> {
+		await this.destroy();
+	}
+
 	override async fetch(request: Request): Promise<Response> {
 		const authorizedKey = request.headers.get("X-Authorized-Key");
 		if (!authorizedKey) {
