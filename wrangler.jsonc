@@ -20,7 +20,6 @@
 		{
 			"class_name": "SshContainer",
 			"image": "./container/Dockerfile",
-			"max_instances": 64,
 			"instance_type": "standard-4",
 			"rollout_step_percentage": [100]
 		}
