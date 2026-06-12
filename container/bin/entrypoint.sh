@@ -20,7 +20,16 @@ mkdir -p /run/sshd
 
 motd-gen > /etc/motd || true
 
-dockerd >/var/log/dockerd.log 2>&1 &
+# cgroup v2: move all procs out of the root cgroup so controllers can be
+# delegated to Docker's child cgroups ("no internal processes" rule), then
+# use the cgroupfs driver since no systemd is running to manage scope units.
+if [ -f /sys/fs/cgroup/cgroup.controllers ]; then
+	mkdir -p /sys/fs/cgroup/init
+	xargs -rn1 < /sys/fs/cgroup/cgroup.procs > /sys/fs/cgroup/init/cgroup.procs || true
+	sed -e 's/ / +/g' -e 's/^/+/' < /sys/fs/cgroup/cgroup.controllers > /sys/fs/cgroup/cgroup.subtree_control
+fi
+
+dockerd --exec-opt native.cgroupdriver=cgroupfs >/var/log/dockerd.log 2>&1 &
 /usr/sbin/sshd -D &
 wsproxy &
 wait -n
